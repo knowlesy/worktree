@@ -1,0 +1,124 @@
+{
+    "$schema": "https://json.schemastore.org/eslintrc.json",
+
+    "_comment_purpose": [
+        "Security-focused ESLint configuration for the Git Worktrees Native VS Code extension.",
+        "Run with: npx eslint --config .agents/security-reviewer/.eslintrc.security.json src/",
+        "This config targets TypeScript files and flags patterns that are dangerous in the",
+        "context of a VS Code extension that spawns child processes."
+    ],
+
+    "root": true,
+
+    "env": {
+        "node": true,
+        "es2022": true
+    },
+
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+    },
+
+    "plugins": ["@typescript-eslint"],
+
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+
+    "rules": {
+        "_comment_eval_family": "Prevent code generation from strings — these bypass static analysis and are shell-injection adjacent.",
+        "no-eval": "error",
+        "no-implied-eval": "error",
+        "no-new-func": "error",
+        "no-script-url": "error",
+
+        "_comment_child_process": [
+            "ESLint does not have a built-in rule for child_process usage.",
+            "Use the following grep commands to manually audit:",
+            "",
+            "  # Verify ONLY execFile is used (never exec, execSync, spawn with shell:true):",
+            "  grep -rn 'exec(' src/                    # Should return 0 results",
+            "  grep -rn 'execSync(' src/                 # Should return 0 results",
+            "  grep -rn 'spawn(' src/                    # Should return 0 results",
+            "  grep -rn 'spawnSync(' src/                # Should return 0 results",
+            "  grep -rn 'shell:\\s*true' src/             # Should return 0 results",
+            "",
+            "  # Verify execFile is the only child_process API used:",
+            "  grep -rn 'child_process' src/             # Should only show worktreeCore.ts",
+            "",
+            "If any of the above greps return unexpected results, investigate immediately."
+        ],
+
+        "_comment_prototype_pollution": "Prevent patterns that could lead to prototype pollution.",
+        "no-proto": "error",
+        "no-extend-native": "error",
+
+        "_comment_unsafe_patterns": "Flag other unsafe patterns.",
+        "no-restricted-globals": ["error", {
+            "name": "eval",
+            "message": "eval() is forbidden. Use a safe alternative."
+        }],
+
+        "no-restricted-properties": ["error",
+            {
+                "object": "child_process",
+                "property": "exec",
+                "message": "Use execFile() instead of exec() to avoid shell injection."
+            },
+            {
+                "object": "child_process",
+                "property": "execSync",
+                "message": "Use execFileSync() instead of execSync() to avoid shell injection."
+            }
+        ],
+
+        "no-restricted-imports": ["error", {
+            "paths": [
+                {
+                    "name": "child_process",
+                    "importNames": ["exec", "execSync", "spawn", "spawnSync"],
+                    "message": "Only execFile and execFileSync are permitted. exec/spawn with shell invocation are forbidden."
+                }
+            ]
+        }],
+
+        "_comment_general_safety": "General safety rules to prevent common mistakes.",
+        "no-var": "error",
+        "prefer-const": "warn",
+        "eqeqeq": ["error", "always"],
+        "no-throw-literal": "error",
+        "no-unused-expressions": "error",
+        "no-sequences": "error",
+        "no-void": "error",
+        "no-with": "error",
+        "radix": "error",
+
+        "_comment_typescript_safety": "TypeScript-specific safety rules.",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-non-null-assertion": "warn",
+        "@typescript-eslint/no-implied-eval": "error",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off"
+    },
+
+    "overrides": [
+        {
+            "files": ["*.ts"],
+            "rules": {
+                "no-implied-eval": "off",
+                "@typescript-eslint/no-implied-eval": "error"
+            }
+        }
+    ],
+
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        "*.js",
+        "*.d.ts"
+    ]
+}

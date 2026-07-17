@@ -1,0 +1,104 @@
+{
+  "name": "git-worktrees-native",
+  "displayName": "Git Worktrees Native",
+  "description": "Native, lightning-fast Git worktree management for multi-repo workspaces.",
+  "version": "1.0.0",
+  "publisher": "knowlesy",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knowlesy/worktree"
+  },
+  "icon": "icon.jpg",
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "git-worktrees.add",
+        "title": "Git Worktrees: Add Worktree",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "git-worktrees.remove",
+        "title": "Git Worktrees: Remove Worktree",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "git-worktrees.switch",
+        "title": "Git Worktrees: Switch Worktree",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "git-worktrees.refresh",
+        "title": "Git Worktrees: Refresh",
+        "icon": "$(refresh)"
+      }
+    ],
+    "views": {
+      "scm": [
+        {
+          "id": "gitWorktreesView",
+          "name": "Git Worktrees",
+          "visibility": "visible"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "git-worktrees.add",
+          "when": "view == gitWorktreesView",
+          "group": "navigation"
+        },
+        {
+          "command": "git-worktrees.refresh",
+          "when": "view == gitWorktreesView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "git-worktrees.switch",
+          "when": "view == gitWorktreesView && viewItem == worktree",
+          "group": "inline"
+        },
+        {
+          "command": "git-worktrees.remove",
+          "when": "view == gitWorktreesView && viewItem == worktree",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "node esbuild.js --production",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch",
+    "test:integration": "tsx src/test/integration/runTest.ts"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.85.0",
+    "@vitest/coverage-v8": "^3.1.0",
+    "@vscode/test-electron": "^3.0.0",
+    "esbuild": "^0.19.11",
+    "mocha": "^11.7.6",
+    "tsx": "^4.23.1",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.0"
+  }
+}
