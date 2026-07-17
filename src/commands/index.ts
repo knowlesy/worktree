@@ -15,6 +15,9 @@ export function registerCommands(context: vscode.ExtensionContext, gitApi: GitAP
         vscode.commands.registerCommand('git-worktrees.remove', (node?: WorktreeNode) => {
             removeWorktreeCommand(gitApi, node).then(() => provider.refresh());
         }),
+        vscode.commands.registerCommand('git-worktrees.duplicate', (node?: WorktreeNode) => {
+            duplicateWorktreeCommand(gitApi, openRepositories, node).then(() => provider.refresh());
+        }),
         vscode.commands.registerCommand('git-worktrees.switch', (node?: WorktreeNode) => {
             switchWorktreeCommand(node);
         }),
