@@ -2,7 +2,7 @@
   "name": "git-worktrees-native",
   "displayName": "Git Worktrees Native",
   "description": "Native, lightning-fast Git worktree management for multi-repo workspaces.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "knowlesy",
   "engines": {
     "vscode": "^1.85.0"

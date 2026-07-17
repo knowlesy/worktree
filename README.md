@@ -17,7 +17,8 @@
 ## Features
 
 - **Lightning Fast**: Built directly on top of the native VS Code Git Extension API and `git worktree` commands.
-- **Multi-Repo Support**: Automatically detects and lists worktrees across all open repositories in your workspace.
+- **Multi-Repo Support**: Automatically detects all open repositories. You can select multiple repositories at once to apply a worktree to all of them simultaneously!
+- **Intelligent Branch Sync**: When adding a worktree, the extension suggests branches that are already active in your other workspace repositories, making cross-repo synchronization effortless.
 - **Easy Management**: Add, remove, and switch between worktrees directly from the Source Control (SCM) view.
 - **Visual Indicators**: Clear icons distinguishing between bare repositories, detached heads, and active branches.
 
