@@ -3,6 +3,7 @@ import { GitAPI } from '../types';
 import { addWorktreeCommand } from './addWorktree';
 import { removeWorktreeCommand } from './removeWorktree';
 import { switchWorktreeCommand } from './switchWorktree';
+import { duplicateWorktreeCommand } from './duplicateWorktree';
 import { WorktreeProvider } from '../views/worktreeProvider';
 import { WorktreeNode } from '../views/worktreeNode';
 

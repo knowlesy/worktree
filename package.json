@@ -39,6 +39,11 @@
         "icon": "$(git-branch)"
       },
       {
+        "command": "git-worktrees.duplicate",
+        "title": "Git Worktrees: Duplicate to Other Repositories...",
+        "icon": "$(versions)"
+      },
+      {
         "command": "git-worktrees.refresh",
         "title": "Git Worktrees: Refresh",
         "icon": "$(refresh)"
@@ -76,6 +81,11 @@
           "command": "git-worktrees.remove",
           "when": "view == gitWorktreesView && viewItem == worktree",
           "group": "inline"
+        },
+        {
+          "command": "git-worktrees.duplicate",
+          "when": "view == gitWorktreesView && viewItem == worktree",
+          "group": "2_modification"
         }
       ]
     }
