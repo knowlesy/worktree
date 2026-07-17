@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/49</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/49</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -124,7 +124,19 @@
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,8 +168,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,12 +238,24 @@ import { GitAPI } from '../types';
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    const branchName = await vscode.window.showInputBox({</span>
 <span class="cstat-no" title="statement not covered" >        prompt: 'Enter the new branch/worktree name',</span>
-<span class="cstat-no" title="statement not covered" >        placeHolder: 'feature/new-feature'</span>
+<span class="cstat-no" title="statement not covered" >        placeHolder: 'feature/new-feature',</span>
+<span class="cstat-no" title="statement not covered" >        validateInput: (value) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            if (!value) return 'Branch name cannot be empty';</span>
+<span class="cstat-no" title="statement not covered" >            if (value.startsWith('-')) return 'Branch name cannot start with a hyphen';</span>
+<span class="cstat-no" title="statement not covered" >            if (/\.\.|[\x00-\x20\x7F~^:?*\[\\]/.test(value)) return 'Branch name contains invalid characters';</span>
+<span class="cstat-no" title="statement not covered" >            if (value.endsWith('/')) return 'Branch name cannot end with a slash';</span>
+<span class="cstat-no" title="statement not covered" >            if (value.endsWith('.lock')) return 'Branch name cannot end with .lock';</span>
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >    });</span>
 <span class="cstat-no" title="statement not covered" >    if (!branchName) return;</span>
 &nbsp;
     // sanitize for directory name
-<span class="cstat-no" title="statement not covered" >    const safeName = branchName.replace(/[\/\\]/g, '-');</span>
+<span class="cstat-no" title="statement not covered" >    const safeName = branchName.replace(/[\/\\]/g, '-').replace(/^\.+/, '').replace(/[^\w.-]/g, '');</span>
+<span class="cstat-no" title="statement not covered" >    if (!safeName) {</span>
+<span class="cstat-no" title="statement not covered" >        vscode.window.showErrorMessage('Invalid branch name provided.');</span>
+<span class="cstat-no" title="statement not covered" >        return;</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    const worktreeDir = `../${safeName}`;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
@@ -253,7 +289,7 @@ import { GitAPI } from '../types';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-17T12:04:16.711Z
+                at 2026-07-17T18:34:17.587Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

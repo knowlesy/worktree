@@ -265,7 +265,7 @@ describe('addWorktree', () => {
 
         expect(mockExecFile).toHaveBeenCalledWith(
             GIT,
-            ['worktree', 'add', '-b', 'feature-branch', '/tmp/worktrees/feature-branch'],
+            ['worktree', 'add', '-b', 'feature-branch', '--', '/tmp/worktrees/feature-branch'],
             { cwd: REPO },
             expect.any(Function),
         );
@@ -296,7 +296,7 @@ describe('removeWorktree', () => {
 
         expect(mockExecFile).toHaveBeenCalledWith(
             GIT,
-            ['worktree', 'remove', '/tmp/worktrees/feature-branch'],
+            ['worktree', 'remove', '--', '/tmp/worktrees/feature-branch'],
             { cwd: REPO },
             expect.any(Function),
         );

@@ -5,6 +5,7 @@ export default defineConfig({
     test: {
         root: __dirname,
         include: ['src/**/*.test.ts'],
+        exclude: ['src/test/integration/**/*.test.ts'],
         globals: false,
         coverage: {
             provider: 'v8',
