@@ -4,3 +4,5 @@ out/
 .vscode-test/
 .vscode-test-workspace/
 *.vsix
+.agents/
+coverage/
