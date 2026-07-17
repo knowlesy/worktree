@@ -4,10 +4,27 @@ import { WorktreeInfo } from '../types';
 
 const execFileAsync = promisify(execFile);
 
+export async function branchExists(gitPath: string, repoPath: string, branchName: string): Promise<boolean> {
+    try {
+        await execFileAsync(gitPath, ['rev-parse', '--verify', branchName], { cwd: repoPath });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 export async function addWorktree(gitPath: string, repoPath: string, branchName: string, worktreeDir: string): Promise<void> {
-    await execFileAsync(gitPath, ['worktree', 'add', '-b', branchName, '--', worktreeDir], {
-        cwd: repoPath
-    });
+    const exists = await branchExists(gitPath, repoPath, branchName);
+    
+    if (exists) {
+        await execFileAsync(gitPath, ['worktree', 'add', '--', worktreeDir, branchName], {
+            cwd: repoPath
+        });
+    } else {
+        await execFileAsync(gitPath, ['worktree', 'add', '-b', branchName, '--', worktreeDir], {
+            cwd: repoPath
+        });
+    }
 }
 
 export async function removeWorktree(gitPath: string, repoPath: string, worktreeDir: string): Promise<void> {

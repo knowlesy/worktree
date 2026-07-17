@@ -33,7 +33,7 @@ function mockExecFileError(message: string, code = 1): void {
     );
 }
 
-import { listWorktrees, addWorktree, removeWorktree } from '../../git/worktreeCore';
+import { listWorktrees, addWorktree, removeWorktree, branchExists } from '../../git/worktreeCore';
 
 // ─── listWorktrees ───────────────────────────────────────────────────────────
 
@@ -248,6 +248,35 @@ describe('listWorktrees', () => {
     });
 });
 
+// ─── branchExists ────────────────────────────────────────────────────────────
+
+describe('branchExists', () => {
+    const GIT = '/usr/bin/git';
+    const REPO = '/home/user/project';
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('should return true if rev-parse succeeds', async () => {
+        mockExecFileResult('');
+        const result = await branchExists(GIT, REPO, 'existing-branch');
+        expect(result).toBe(true);
+        expect(mockExecFile).toHaveBeenCalledWith(
+            GIT,
+            ['rev-parse', '--verify', 'existing-branch'],
+            { cwd: REPO },
+            expect.any(Function),
+        );
+    });
+
+    it('should return false if rev-parse fails', async () => {
+        mockExecFileError('fatal: Needed a single revision');
+        const result = await branchExists(GIT, REPO, 'non-existent-branch');
+        expect(result).toBe(false);
+    });
+});
+
 // ─── addWorktree ─────────────────────────────────────────────────────────────
 
 describe('addWorktree', () => {
@@ -258,12 +287,20 @@ describe('addWorktree', () => {
         vi.clearAllMocks();
     });
 
-    it('should call execFile with correct arguments to create a worktree', async () => {
-        mockExecFileResult('');
+    it('should call execFile with -b if branch does not exist', async () => {
+        // First call to rev-parse (fails), second call to worktree add (succeeds)
+        mockExecFile.mockImplementationOnce(((cmd: unknown, args: unknown, opts: unknown, cb: Function) => {
+            cb(new Error('fatal'));
+        }) as any);
+        mockExecFile.mockImplementationOnce(((cmd: unknown, args: unknown, opts: unknown, cb: Function) => {
+            cb(null, { stdout: '', stderr: '' });
+        }) as any);
 
         await addWorktree(GIT, REPO, 'feature-branch', '/tmp/worktrees/feature-branch');
 
-        expect(mockExecFile).toHaveBeenCalledWith(
+        expect(mockExecFile).toHaveBeenCalledTimes(2);
+        expect(mockExecFile).toHaveBeenNthCalledWith(
+            2,
             GIT,
             ['worktree', 'add', '-b', 'feature-branch', '--', '/tmp/worktrees/feature-branch'],
             { cwd: REPO },
@@ -271,11 +308,34 @@ describe('addWorktree', () => {
         );
     });
 
-    it('should propagate errors from execFile', async () => {
-        mockExecFileError('fatal: branch already exists');
+    it('should call execFile without -b if branch already exists', async () => {
+        // First call to rev-parse (succeeds), second call to worktree add (succeeds)
+        mockExecFileResult('');
+
+        await addWorktree(GIT, REPO, 'feature-branch', '/tmp/worktrees/feature-branch');
+
+        expect(mockExecFile).toHaveBeenCalledTimes(2);
+        expect(mockExecFile).toHaveBeenNthCalledWith(
+            2,
+            GIT,
+            ['worktree', 'add', '--', '/tmp/worktrees/feature-branch', 'feature-branch'],
+            { cwd: REPO },
+            expect.any(Function),
+        );
+    });
+
+    it('should propagate errors from execFile during worktree add', async () => {
+        // First call fails (branch doesn't exist), second call fails (add error)
+        mockExecFile.mockImplementationOnce(((cmd: unknown, args: unknown, opts: unknown, cb: Function) => {
+            cb(new Error('fatal'));
+        }) as any);
+        mockExecFile.mockImplementationOnce(((cmd: unknown, args: unknown, opts: unknown, cb: Function) => {
+            cb(new Error('fatal: could not add worktree'));
+        }) as any);
+
         await expect(
             addWorktree(GIT, REPO, 'existing', '/tmp/worktrees/existing'),
-        ).rejects.toThrow('fatal: branch already exists');
+        ).rejects.toThrow('fatal: could not add worktree');
     });
 });
 
