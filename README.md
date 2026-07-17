@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=knowlesy.git-worktrees-native"><img src="https://img.shields.io/visual-studio-marketplace/v/knowlesy.git-worktrees-native" alt="Marketplace Version"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=knowlesy.git-worktrees-native"><img src="https://img.shields.io/visual-studio-marketplace/i/knowlesy.git-worktrees-native" alt="Installs"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=knowlesy.git-worktrees-native"><img src="https://img.shields.io/vs-marketplace/v/knowlesy.git-worktrees-native" alt="Marketplace Version"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=knowlesy.git-worktrees-native"><img src="https://img.shields.io/vs-marketplace/i/knowlesy.git-worktrees-native" alt="Installs"></a>
   <a href="https://github.com/knowlesy/worktree/actions"><img src="https://github.com/knowlesy/worktree/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a>
   <a href="https://github.com/knowlesy/worktree/blob/main/LICENSE"><img src="https://img.shields.io/github/license/knowlesy/worktree" alt="License"></a>
 </p>
